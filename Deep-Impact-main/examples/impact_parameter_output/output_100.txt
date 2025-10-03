@@ -1,0 +1,24 @@
+      Postcode  probability
+57131  ML1 2GE         0.83
+58043  ML1 5FQ         0.83
+57058  ML1 2AU         0.83
+57057  ML1 2AT         0.83
+57056  ML1 2AR         0.83
+57055  ML1 2AQ         0.83
+57054  ML1 2AP         0.83
+57053  ML1 2AJ         0.83
+57052  ML1 2AG         0.83
+57051  ML1 2AF         0.83
+57050  ML1 2AB         0.83
+58039  ML1 5FJ         0.83
+58041  ML1 5FN         0.83
+58044  ML1 5FR         0.83
+57092  ML1 2DW         0.83
+58045  ML1 5FS         0.83
+58051  ML1 5GD         0.83
+58053  ML1 5GJ         0.83
+58058  ML1 5GW         0.83
+58062  ML1 5HA         0.83
+
+Total population affected for 100 parameter list: 1,888,312 +/- 844,124
+Runtime of the code: 107.27 seconds

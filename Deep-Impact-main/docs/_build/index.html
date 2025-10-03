@@ -1,0 +1,726 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Project 1: Deep Impact - The hazard of small asteroids &#8212; Deep Impact  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="project-1-deep-impact-the-hazard-of-small-asteroids">
+<h1>Project 1: Deep Impact - The hazard of small asteroids<a class="headerlink" href="#project-1-deep-impact-the-hazard-of-small-asteroids" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis:<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p>Asteroids entering Earth’s atmosphere are subject to extreme drag forces
+that decelerate, heat and disrupt the space rocks. The fate of an
+asteroid is a complex function of its initial mass, speed, trajectory
+angle and internal strength.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Asteroid">Asteroids</a> 10-100 m in
+diameter can penetrate deep into Earth’s atmosphere and disrupt
+catastrophically, generating an atmospheric disturbance
+(<a class="reference external" href="https://en.wikipedia.org/wiki/Air_burst">airburst</a>) that can cause
+<a class="reference external" href="https://www.youtube.com/watch?v=tq02C_3FvFo">damage on the ground</a>.
+Such an event occurred over the city of
+<a class="reference external" href="https://en.wikipedia.org/wiki/Chelyabinsk_meteor">Chelyabinsk</a> in
+Russia, in 2013, releasing energy equivalent to about 520 <a class="reference external" href="https://en.wikipedia.org/wiki/TNT_equivalent">kilotons of
+TNT</a> (1 kt TNT is
+equivalent to <span class="math notranslate nohighlight">\(4.184 \times 10^{12}\)</span> J), and injuring thousands of
+people (<a class="reference external" href="http://doi.org/10.1126/science.1242642">Popova et al.,
+2013</a>; <a class="reference external" href="http://doi.org/10.1038/nature12741">Brown et al.,
+2013</a>). An even larger event
+occurred over
+<a class="reference external" href="https://en.wikipedia.org/wiki/Tunguska_event">Tunguska</a>, a
+relatively unpopulated area in Siberia, in 1908.</p>
+<p>This simulator predicts the fate of asteroids entering Earth’s atmosphere,
+and provides a hazard mapper for an impact over the UK.</p>
+</section>
+<section id="problem-definition">
+<h2>Problem definition<a class="headerlink" href="#problem-definition" title="Permalink to this heading">¶</a></h2>
+<section id="equations-of-motion-for-a-rigid-asteroid">
+<h3>Equations of motion for a rigid asteroid<a class="headerlink" href="#equations-of-motion-for-a-rigid-asteroid" title="Permalink to this heading">¶</a></h3>
+<p>The dynamics of an asteroid in Earth’s atmosphere prior to break-up is
+governed by a coupled set of ordinary differential equations:</p>
+<div class="math notranslate nohighlight">
+\begin{aligned}
+\frac{dv}{dt} &amp; = \frac{-C_D\rho_a A v^2}{2 m} + g \sin \theta \\
+\frac{dm}{dt} &amp; = \frac{-C_H\rho_a A v^3}{2 Q} \\
+\frac{d\theta}{dt} &amp; = \frac{g\cos\theta}{v} - \frac{C_L\rho_a A v}{2 m} - \frac{v\cos\theta}{R_P + z} \\
+\frac{dz}{dt} &amp; = -v\sin\theta \\
+\frac{dx}{dt} &amp; = \frac{v\cos\theta}{1 + z/R_P}
+\end{aligned}</div><p>In these equations, <span class="math notranslate nohighlight">\(v\)</span>, <span class="math notranslate nohighlight">\(m\)</span>, and <span class="math notranslate nohighlight">\(A\)</span> are the asteroid
+speed (along trajectory), mass and cross-sectional area, respectively.
+We will assume an initially <strong>spherical asteroid</strong> to convert from
+inital radius to mass (and cross-sectional area). <span class="math notranslate nohighlight">\(\theta\)</span> is the
+meteoroid trajectory angle to the horizontal (in radians), <span class="math notranslate nohighlight">\(x\)</span> is
+the downrange distance of the meteoroid from its entry position,
+<span class="math notranslate nohighlight">\(z\)</span> is the altitude and <span class="math notranslate nohighlight">\(t\)</span> is time; <span class="math notranslate nohighlight">\(C_D\)</span> is the drag
+coefficient, <span class="math notranslate nohighlight">\(\rho_a\)</span> is the atmospheric density (a function of
+altitude ), <span class="math notranslate nohighlight">\(C_H\)</span> is an ablation efficiency coefficient, <span class="math notranslate nohighlight">\(Q\)</span>
+is the specific heat of ablation; <span class="math notranslate nohighlight">\(C_L\)</span> is a lift coefficient; and
+<span class="math notranslate nohighlight">\(R_P\)</span> is the planetary radius. All terms use MKS units.</p>
+</section>
+<section id="asteroid-break-up-and-deformation">
+<h3>Asteroid break-up and deformation<a class="headerlink" href="#asteroid-break-up-and-deformation" title="Permalink to this heading">¶</a></h3>
+<p>A commonly used criterion for the break-up of an asteroid in the
+atmosphere is when the ram pressure of the air interacting with the
+asteroid <span class="math notranslate nohighlight">\(\rho_a v^2\)</span> first exceeds the strength of the asteroid
+<span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\rho_a v^2 = Y\]</div>
+<p>Should break-up occur, the asteroid deforms and spreads laterally as it
+continues its passage through the atmosphere. Several models for the
+spreading rate have been proposed. In the simplest model, the fragmented
+asteroid’s spreading rate is related to its along trajectory speed
+<a class="reference external" href="http://doi.org/10.1086/116499">(Hills and Goda, 1993)</a>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dt} = \left[\frac{7}{2}\alpha\frac{\rho_a}{\rho_m}\right]^{1/2} v\]</div>
+<p>Where <span class="math notranslate nohighlight">\(r\)</span> is the asteroid radius, <span class="math notranslate nohighlight">\(\rho_m\)</span> is the asteroid
+density (assumed constant) and <span class="math notranslate nohighlight">\(\alpha\)</span> is a spreading
+coefficient, often taken to be 0.3. It is conventional to define the
+cross-sectional area of the expanding cloud of fragments as
+<span class="math notranslate nohighlight">\(A = \pi r^2\)</span> (i.e., assuming a circular cross-section), for use
+in the above equations. Fragmentation and spreading <strong>ceases</strong> when the
+ram pressure drops back below the strength of the meteoroid
+<span class="math notranslate nohighlight">\(\rho_a v^2 &lt; Y\)</span>.</p>
+</section>
+<section id="airblast-damage">
+<h3>Airblast damage<a class="headerlink" href="#airblast-damage" title="Permalink to this heading">¶</a></h3>
+<p>The rapid deposition of energy in the atmosphere is analogous to an
+explosion and so the environmental consequences of the airburst can be
+estimated using empirical data from atmospheric explosion experiments
+<a class="reference external" href="https://www.dtra.mil/Portals/61/Documents/NTPR/4-Rad_Exp_Rpts/36_The_Effects_of_Nuclear_Weapons.pdf">(Glasstone and Dolan,
+1977)</a>.</p>
+<p>The main cause of damage close to the impact site is a strong (pressure)
+blastwave in the air, known as the <strong>airblast</strong>. Empirical data suggest
+that the pressure in this wave <span class="math notranslate nohighlight">\(p\)</span> (in Pa) (above ambient, also
+known as overpressure), as a function of explosion energy <span class="math notranslate nohighlight">\(E_k\)</span>
+(in kilotons of TNT equivalent), burst altitude <span class="math notranslate nohighlight">\(z_b\)</span> (in m) and
+horizontal range <span class="math notranslate nohighlight">\(r\)</span> (in m), is given by:</p>
+<div class="math notranslate nohighlight">
+\begin{equation*}
+   p(r) = 3.14 \times 10^{11} \left(\frac{r^2 + z_b^2}{E_k^{2/3}}\right)^{-1.3} + 1.8 \times 10^{7} \left(\frac{r^2 + z_b^2}{E_k^{2/3}}\right)^{-0.565}
+\end{equation*}</div><p>For airbursts, we will take the total kinetic energy lost by the
+asteroid at the burst altitude as the burst energy <span class="math notranslate nohighlight">\(E_k\)</span>. For
+cratering events, we will define <span class="math notranslate nohighlight">\(E_k\)</span>
+as the <strong>larger</strong> of the total kinetic energy lost by the asteroid at
+the burst altitude or the residual kinetic energy of the asteroid when
+it hits the ground.</p>
+<p>The following threshold pressures can then be used to define different
+degrees of damage.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Damage Level</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Pressure (kPa)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>~10% glass windows shatter</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>~90% glass windows shatter</p></td>
+<td><p>3.5</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Wood frame buildings collapse</p></td>
+<td><p>27</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Multistory brick buildings collapse</p></td>
+<td><p>43</p></td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Pressure thresholds (in kPa) for airblast damage</p>
+</section>
+<section id="additional-sections">
+<h3>Additional sections<a class="headerlink" href="#additional-sections" title="Permalink to this heading">¶</a></h3>
+<p>You should expand this documentation to include explanatory text for all components of your tool.</p>
+</section>
+</section>
+</section>
+<section id="module-deepimpact">
+<span id="function-api"></span><h1>Function API<a class="headerlink" href="#module-deepimpact" title="Permalink to this heading">¶</a></h1>
+<p>Python asteroid airburst calculator</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">GeospatialLocator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">postcode_file='/Users/tg1523/Library/CloudStorage/OneDrive-Personal/Documents/acse/acs-deepimpact-kuiper/deepimpact/../resources/full_postcodes.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">census_file='/Users/tg1523/Library/CloudStorage/OneDrive-Personal/Documents/acse/acs-deepimpact-kuiper/deepimpact/../resources/UK_residential_population_2011_latlon.asc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm=&lt;function</span> <span class="pre">great_circle_distance&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to interact with a postcode database file and a population grid file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>postcode_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Filename of a .csv file containing geographic
+location data for postcodes.</p></li>
+<li><p><strong>census_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Filename of a .asc file containing census data on a
+latitude-longitude grid.</p></li>
+<li><p><strong>norm</strong> (<em>function</em>) – Python function defining the distance between points in
+latitude-longitude space.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.calculate_impacted_population">
+<span class="sig-name descname"><span class="pre">calculate_impacted_population</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_distances</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.calculate_impacted_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the population impacted within a specified radius around a set of grid centers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>float</em>) – The radius within which to calculate the impacted population.</p></li>
+<li><p><strong>grid_centers</strong> (<em>arraylike</em>) – An array of latitude-longitude pairs representing grid centers.</p></li>
+<li><p><strong>grid_distances</strong> (<em>arraylike</em>) – An array of distances from a reference point to each grid center.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The total population impacted within the specified radius around the given grid centers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method approximates the impacted population by considering the proportion of each grid cell’s area
+that falls within the specified radius. The population data is sourced from the census data loaded earlier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.find_nearest_coordinates">
+<span class="sig-name descname"><span class="pre">find_nearest_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.find_nearest_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the nearest geographic coordinates from the census data to a given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>arraylike</em>) – A pair (tuple, list) of latitude and longitude for the reference point.</p></li>
+<li><p><strong>num_coords</strong> (<em>int</em>) – The number of nearest coordinates to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing two elements:
+1. An array of the nearest coordinates (latitude, longitude).
+2. An array of distances from the reference point to each of these coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method uses a KDTree for efficient nearest neighbor searching.
+The distances returned are calculated using the great_circle_distance function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.get_population_by_radius">
+<span class="sig-name descname"><span class="pre">get_population_by_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.get_population_by_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the population within specific distances of input location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>arraylike</em>) – Latitude-longitude pair of centre location</p></li>
+<li><p><strong>radii</strong> (<em>arraylike</em>) – array of radial distances from X</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contains the population closer than the elements of radii to
+the location X. Output should be the same shape as the radii array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">GeospatialLocator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span><span class="o">.</span><span class="n">get_population_by_radius</span><span class="p">((</span><span class="mf">51.4981</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1773</span><span class="p">),</span> <span class="p">[</span><span class="mf">1e2</span><span class="p">,</span> <span class="mf">5e2</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.get_postcodes_by_radius">
+<span class="sig-name descname"><span class="pre">get_postcodes_by_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.get_postcodes_by_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return postcodes within specific distances of
+input location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>arraylike</em>) – Latitude-longitude pair of centre location</p></li>
+<li><p><strong>radii</strong> (<em>arraylike</em>) – array of radial distances from X</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contains the lists of postcodes closer than the elements
+of radii to the location X.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of lists</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span> <span class="o">=</span> <span class="n">GeospatialLocator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span><span class="o">.</span><span class="n">get_postcodes_by_radius</span><span class="p">((</span><span class="mf">51.4981</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1773</span><span class="p">),</span> <span class="p">[</span><span class="mf">1.5e3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span><span class="o">.</span><span class="n">get_postcodes_by_radius</span><span class="p">((</span><span class="mf">51.4981</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1773</span><span class="p">),</span>
+<span class="go">                                    [1.5e3, 4.0e3])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.load_census_data">
+<span class="sig-name descname"><span class="pre">load_census_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.load_census_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load census data from an .asc file. This file is expected to contain geographic and population data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A DataFrame containing latitude, longitude, and population data from the census file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>FileNotFoundError</strong> – If the specified census file does not exist.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The method reads the geographic and population data assuming a specific format for the .asc file.
+It filters out rows with ‘no data’ values, replacing them with a population of zero.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.GeospatialLocator.load_postcode_data">
+<span class="sig-name descname"><span class="pre">load_postcode_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.GeospatialLocator.load_postcode_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load postcode data from a CSV file. Filters out invalid latitude and longitude values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A DataFrame containing the filtered postcode data with valid latitude and longitude values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>FileNotFoundError</strong> – If the specified postcode file does not exist.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The method assumes the CSV file has columns ‘Latitude’ and ‘Longitude’ among others.
+Only rows with latitude values between -90 and 90 and longitude values between -180 and 180 are retained.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepimpact.Planet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">Planet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atmos_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'exponential'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmos_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/tg1523/Library/CloudStorage/OneDrive-Personal/Documents/acse/acs-deepimpact-kuiper/deepimpact/../resources/AltitudeDensityTable.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6371000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9.81</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class called Planet is initialised with constants appropriate
+for the given target planet, including the atmospheric density profile
+and other constants</p>
+<p>Set up the initial parameters and constants for the target planet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atmos_func</strong> (<em>string</em><em>, </em><em>optional</em>) – Function which computes atmospheric density, rho, at altitude, z.
+Default is the exponential function rho = rho0 exp(-z/H).
+Options are ‘exponential’, ‘tabular’ and ‘constant’</p></li>
+<li><p><strong>atmos_filename</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the filename to use with the tabular atmos_func option</p></li>
+<li><p><strong>Cd</strong> (<em>float</em><em>, </em><em>optional</em>) – The drag coefficient</p></li>
+<li><p><strong>Ch</strong> (<em>float</em><em>, </em><em>optional</em>) – The heat transfer coefficient</p></li>
+<li><p><strong>Q</strong> (<em>float</em><em>, </em><em>optional</em>) – The heat of ablation (J/kg)</p></li>
+<li><p><strong>Cl</strong> (<em>float</em><em>, </em><em>optional</em>) – Lift coefficient</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Dispersion coefficient</p></li>
+<li><p><strong>Rp</strong> (<em>float</em><em>, </em><em>optional</em>) – Planet radius (m)</p></li>
+<li><p><strong>rho0</strong> (<em>float</em><em>, </em><em>optional</em>) – Air density at zero altitude (kg/m^3)</p></li>
+<li><p><strong>g</strong> (<em>float</em><em>, </em><em>optional</em>) – Surface gravity (m/s^2)</p></li>
+<li><p><strong>H</strong> (<em>float</em><em>, </em><em>optional</em>) – Atmospheric scale height (m)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.analyse_outcome">
+<span class="sig-name descname"><span class="pre">analyse_outcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.analyse_outcome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inspect a pre-found solution to calculate the impact and airburst stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>DataFrame</em>) – pandas dataframe with velocity, mass, angle, altitude, horizontal
+distance, radius, and dedz as a function of time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>outcome</strong> – Dictionary with details of the impact event. This should contain
+the key:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">outcome</span></code></dt><dd><p>which should contain one of the following strings:
+<code class="docutils literal notranslate"><span class="pre">Airburst</span></code> or <code class="docutils literal notranslate"><span class="pre">Cratering</span></code>,</p>
+</dd>
+</dl>
+<p>and also the following 4 keys:</p>
+<p><code class="docutils literal notranslate"><span class="pre">burst_peak_dedz</span></code>, <code class="docutils literal notranslate"><span class="pre">burst_altitude</span></code>,
+<code class="docutils literal notranslate"><span class="pre">burst_distance</span></code>, <code class="docutils literal notranslate"><span class="pre">burst_energy</span></code>.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.calculate_energy">
+<span class="sig-name descname"><span class="pre">calculate_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.calculate_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the kinetic energy and its variation per unit altitude of an object.</p>
+<p>This method computes the kinetic energy in kilotons of TNT and the rate of
+energy dissipation per kilometer of altitude change. It adds or updates the
+‘dedz’ column in the provided DataFrame, representing the energy dissipation rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>DataFrame</em>) – A pandas DataFrame with columns ‘mass’, ‘velocity’, and ‘altitude’, representing
+the mass in kilograms, velocity in meters per second, and altitude in meters,
+respectively, of an object at various time steps.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The input DataFrame with an additional or updated column ‘dedz’, representing
+the rate of energy dissipation per kilometer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span> <span class="o">=</span> <span class="n">Planet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entry_result</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">solve_atmospheric_entry</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mf">1e7</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">energy_result</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">calculate_energy</span><span class="p">(</span><span class="n">entry_result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">energy_result</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="go">time      velocity         mass      angle       altitude     distance  radius      dedz</span>
+<span class="go">0  0.00  12000.000000  1570.796327  45.000000  100000.000000     0.000000     0.5  0.000000</span>
+<span class="go">1  0.25  12001.687925  1570.787637  44.989491   97878.724810  2089.219435     0.5 -0.000004</span>
+<span class="go">2  0.50  12003.361518  1570.776305  44.978971   95757.541925  4179.800297     0.5 -0.000003</span>
+<span class="go">3  0.75  12005.016521  1570.761525  44.968438   93636.454859  6271.741069     0.5 -0.000003</span>
+<span class="go">4  1.00  12006.647378  1570.742251  44.957893   91515.467988  8365.039379     0.5 -0.000003</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.interpolate_density">
+<span class="sig-name descname"><span class="pre">interpolate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.interpolate_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate the atmospheric density at a given altitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>array_like</em>) – The altitude(s) at which to interpolate density.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The interpolated density value(s) at the given altitude(s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span> <span class="o">=</span> <span class="n">Planet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span><span class="o">.</span><span class="n">read_csv</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">density_at_10km</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">interpolate_density</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">density_at_10km</span><span class="p">)</span>
+<span class="go">0.41270699999999994</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.read_csv">
+<span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read atmospheric data from a CSV file and initialize interpolation.</p>
+<p>This method reads altitude and density data from a CSV file specified by
+<cite>self.atmos_filename</cite>. It initializes an interpolator for density as a function
+of altitude using cubic interpolation.</p>
+<p>The CSV file is expected to have two columns: altitude and density, with a header row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.rk4_step">
+<span class="sig-name descname"><span class="pre">rk4_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.rk4_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a single step of the RK4 integration method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable</em>) – The derivative function of the ODE, f(t, y), which returns the rate of change at a time t.</p></li>
+<li><p><strong>y</strong> (<em>float</em><em> or </em><em>array_like</em>) – The current value of the dependent variable of the ODE.</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – The current time value.</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – The time step to advance the solution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The estimated value of the dependent variable after one time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Consider a simple ODE dy/dt = -2y, starting at y(0) = 1.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">dydt</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_start</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t_start</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span> <span class="o">=</span> <span class="n">Planet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span><span class="o">.</span><span class="n">rk4_step</span><span class="p">(</span><span class="n">dydt</span><span class="p">,</span> <span class="n">y_start</span><span class="p">,</span> <span class="n">t_start</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="go">0.8187333333333333</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepimpact.Planet.solve_atmospheric_entry">
+<span class="sig-name descname"><span class="pre">solve_atmospheric_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_altitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radians</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.Planet.solve_atmospheric_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate the atmospheric entry of an object, considering factors like
+fragmentation, velocity change, and trajectory alteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of the object (in meters).</p></li>
+<li><p><strong>velocity</strong> (<em>float</em>) – Initial velocity of the object (in meters per second).</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the object (in kilograms per cubic meter).</p></li>
+<li><p><strong>strength</strong> (<em>float</em>) – Material strength of the object (in Pascals).</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Entry angle of the object relative to the surface (in degrees, unless <cite>radians</cite> is True).</p></li>
+<li><p><strong>init_altitude</strong> (<em>float</em><em>, </em><em>optional</em>) – Initial altitude of the object (in meters), by default 100,000 meters (100 km).</p></li>
+<li><p><strong>dt</strong> (<em>float</em><em>, </em><em>optional</em>) – Time step for the simulation (in seconds), by default 0.25 seconds.</p></li>
+<li><p><strong>radians</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, interprets the angle in radians; otherwise in degrees, by default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame containing the simulation results over time. Columns include time,
+velocity, mass, angle, altitude, distance, and radius.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Simulate an object with a radius of 0.5 meters, velocity of 12,000 m/s, density of 3000 kg/m^3,
+strength of 1e7 Pascals, and an entry angle of 45 degrees:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planet</span> <span class="o">=</span> <span class="n">Planet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">solve_atmospheric_entry</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mf">1e7</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="go">time      velocity         mass      angle       altitude     distance  radius</span>
+<span class="go">0  0.00  12000.000000  1570.796327  45.000000  100000.000000     0.000000     0.5</span>
+<span class="go">1  0.25  12001.687925  1570.787637  44.989491   97878.724810  2089.219435     0.5</span>
+<span class="go">2  0.50  12003.361518  1570.776305  44.978971   95757.541925  4179.800297     0.5</span>
+<span class="go">3  0.75  12005.016521  1570.761525  44.968438   93636.454859  6271.741069     0.5</span>
+<span class="go">4  1.00  12006.647378  1570.742251  44.957893   91515.467988  8365.039379     0.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepimpact.damage_zones">
+<span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">damage_zones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outcome</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bearing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressures</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.damage_zones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the latitude and longitude of the surface zero location and the
+list of airblast damage radii (m) for a given impact scenario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outcome</strong> (<em>Dict</em>) – the outcome dictionary from an impact scenario</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude of the meteoroid entry point (degrees)</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude of the meteoroid entry point (degrees)</p></li>
+<li><p><strong>bearing</strong> (<em>float</em>) – Bearing (azimuth) relative to north of meteoroid trajectory (degrees)</p></li>
+<li><p><strong>pressures</strong> (<em>float</em><em>, </em><em>arraylike</em>) – List of threshold pressures to define airblast damage levels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>blat</strong> (<em>float</em>) – latitude of the surface zero point (degrees)</p></li>
+<li><p><strong>blon</strong> (<em>float</em>) – longitude of the surface zero point (degrees)</p></li>
+<li><p><strong>damrad</strong> (<em>arraylike, float</em>) – List of distances specifying the blast radii
+for the input damage levels</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">deepimpact</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;burst_altitude&#39;</span><span class="p">:</span> <span class="mf">8e3</span><span class="p">,</span> <span class="s1">&#39;burst_energy&#39;</span><span class="p">:</span> <span class="mf">7e3</span><span class="p">,</span> <span class="s1">&#39;burst_distance&#39;</span><span class="p">:</span> <span class="mf">90e3</span><span class="p">,</span> <span class="s1">&#39;burst_peak_dedz&#39;</span><span class="p">:</span> <span class="mf">1e3</span><span class="p">,</span> <span class="s1">&#39;outcome&#39;</span><span class="p">:</span> <span class="s1">&#39;Airburst&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deepimpact</span><span class="o">.</span><span class="n">damage_zones</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="mf">52.79</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.95</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="n">pressures</span><span class="o">=</span><span class="p">[</span><span class="mf">1e3</span><span class="p">,</span> <span class="mf">3.5e3</span><span class="p">,</span> <span class="mf">27e3</span><span class="p">,</span> <span class="mf">43e3</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepimpact.great_circle_distance">
+<span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">great_circle_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latlon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.great_circle_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the great circle distance (in metres) between pairs of
+points specified as latitude and longitude on a spherical Earth
+(with radius 6371 km).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latlon1</strong> (<em>arraylike</em>) – latitudes and longitudes of first point (as [n, 2] array for n points)</p></li>
+<li><p><strong>latlon2</strong> (<em>arraylike</em>) – latitudes and longitudes of second point (as [m, 2] array for m points)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance in metres between each pair of points (as an n x m array)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fmt</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">format_float_scientific</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="p">}):</span>
+<span class="go">    print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))</span>
+<span class="go">[1.286e+05 6.378e+04]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepimpact.impact_risk">
+<span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">impact_risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impact_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/tg1523/Library/CloudStorage/OneDrive-Personal/Documents/acse/acs-deepimpact-kuiper/deepimpact/../resources/impact_parameter_list.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.impact_risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an uncertainty analysis to calculate the probability for
+each affected UK postcode and the total population affected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>planet</strong> (<em>deepimpact.Planet instance</em>) – The Planet instance from which to solve the atmospheric entry</p></li>
+<li><p><strong>impact_file</strong> (<em>str</em>) – Filename of a .csv file containing the impact parameter list
+with columns for ‘radius’, ‘angle’, ‘velocity’, ‘strength’,
+‘density’, ‘entry latitude’, ‘entry longitude’, ‘bearing’</p></li>
+<li><p><strong>pressure</strong> (<em>float</em>) – A single pressure at which to calculate the damage zone for each impact</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em><em> or </em><em>None</em>) – The number of iterations to perform in the uncertainty analysis.
+If None, the full set of impact parameters provided in impact_file
+is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>probability</strong> (<em>DataFrame</em>) – A pandas DataFrame with columns for postcode and the
+probability the postcode was inside the blast radius.</p></li>
+<li><p><strong>population</strong> (<em>dict</em>) – A dictionary containing the mean and standard deviation of the
+population affected by the impact, with keys ‘mean’ and ‘stdev’.
+Values are floats.</p></li>
+<li><p><em>Examples</em></p></li>
+<li><p><em>&gt;&gt;&gt; import deepimpact</em></p></li>
+<li><p><em>&gt;&gt;&gt; planet = deepimpact.Planet()</em></p></li>
+<li><p><em>&gt;&gt;&gt; impact_risk(planet, impact_file=”resources/impact_parameter_list.csv”, pressure=30e3, nsamples=10)</em></p></li>
+<li><p><em>(Postcode  probability)</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepimpact.plot_circle">
+<span class="sig-prename descclassname"><span class="pre">deepimpact.</span></span><span class="sig-name descname"><span class="pre">plot_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deepimpact.plot_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a circle on a map (creating a new folium map instance if necessary).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – latitude of circle to plot (degrees)</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – longitude of circle to plot (degrees)</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius of circle to plot (m)</p></li>
+<li><p><strong>fmap</strong> (<em>folium.Map</em>) – existing map object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Folium map object</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">folium</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deepimpact</span><span class="o">.</span><span class="n">plot_circle</span><span class="p">(</span><span class="mf">52.79</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.95</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Deep Impact</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

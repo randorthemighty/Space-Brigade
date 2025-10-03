@@ -1,0 +1,24 @@
+      Postcode  probability
+59156  ML1 1AF        0.766
+59157  ML1 1AG        0.766
+59158  ML1 1AH        0.766
+60233  ML1 4ZH        0.766
+59160  ML1 1AL        0.766
+59162  ML1 1AP        0.766
+60340  ML1 5GT        0.766
+60318  ML1 5FD        0.765
+60247  ML1 5AN        0.765
+59481  ML1 2NT        0.765
+60311  ML1 5EU        0.765
+60342  ML1 5GW        0.765
+59155  ML1 1AE        0.765
+60239  ML1 5AB        0.765
+60240  ML1 5AD        0.765
+60249  ML1 5AQ        0.765
+60242  ML1 5AF        0.765
+60243  ML1 5AG        0.765
+60244  ML1 5AH        0.765
+60245  ML1 5AJ        0.765
+
+Total population affected for 1000 parameter list: 1,856,132 +/- 965,703
+Runtime of the code: 1366.52 seconds

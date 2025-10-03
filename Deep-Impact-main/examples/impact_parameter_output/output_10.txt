@@ -1,0 +1,24 @@
+      Postcode  probability
+64255  ML119UN          0.9
+42635  G71 5AE          0.9
+8943   EH481HH          0.9
+8969   EH481JZ          0.9
+8971   EH481LF          0.9
+8980   EH481LS          0.9
+8981   EH481LT          0.9
+8982   EH481LU          0.9
+8994   EH481NJ          0.9
+42633  G71 5AB          0.9
+42634  G71 5AD          0.9
+8997   EH481NP          0.9
+8999   EH481NS          0.9
+8348   EH470SG          0.9
+9000   EH481NT          0.9
+9001   EH481NU          0.9
+9002   EH481NW          0.9
+9003   EH481NX          0.9
+9004   EH481PA          0.9
+9005   EH481PB          0.9
+
+Total population affected for 10 parameter list: 2,204,516 +/- 1,013,010
+Runtime of the code: 10.81 seconds
