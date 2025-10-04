@@ -1,0 +1,3 @@
+import deepimpact
+
+earth = deepimpact.Planet()
