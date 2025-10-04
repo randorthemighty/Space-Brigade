@@ -1,9 +1,19 @@
 import deepimpact as di
-
+import math
 #### General idea: Will receive variables, needs to take them, 
 
+### RECEIVE DATA FROM API HERE ###
 
-planet = di.Planet()
-entry_result = planet.solve_atmospheric_entry(0.5, 12000, 3000, 1e7, 45)
-energy_result = planet.calculate_energy(entry_result)
-print(energy_result.head())
+
+### ACTUAL CALCULATION PART ###
+### The Catalyst: Deep Impact requires 8 parameters: Radius (meters), Angle (Degrees), Strength (Pascals [Kg/(m*s^2)]), Density (Kg/m^3),
+### Latitude, Longitude, and Bearing [the last three only affect meteor trajectory].
+
+# We start by taking API data and converting it into units fit for Deep-Impact
+radius = diameter*500 #API measures Diameter in km
+
+strength = (4/3)*(math.pi)*radius^3*megatons*4.184e15
+
+
+
+
