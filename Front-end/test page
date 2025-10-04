@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
+import pprint
 from flask import Flask, render_template
 #######################
 
@@ -13,19 +14,20 @@ def index():
     url = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=WLnxw2BlieP9zAAfu9MHwN5NwZOhytUmRVjBzTcW"
     response = requests.get(url)
     data = response.json()
-    print(data['near_earth_objects'][0])
+    pprint.pprint(data['near_earth_objects'][1]['close_approach_data'][6]['close_approach_date'])
+    #print(data['near_earth_objects'])
 
     asteroids = []
     for neo in data['near_earth_objects']:
         asteroids.append({
-            #'id': neo['íd'],
-            'name': neo['name'],
-            'magnitude': neo['absolute_magnitude_h'],
-            'radius_km': neo['estimated_radius']['kilometers']['estimated_diameter_max'/2],
-            'close_approach_date': neo['close_approach_data'][0]['close_approach_date'],
-            'velocity': neo['close_approach_data'][0]['relative_velocity']['kilometers_per_hour'],
-            'miss_distance': neo['close_approach_data'][0]['miss_distance']['kilometers'],
-            'hazardous': neo['is_potentially_hazardous_asteroid']
+            'id': data[neo]['id'],
+            'name': data[neo]['name'],
+            'magnitude': data[neo]['absolute_magnitude_h'],
+            'radius_km': (data[neo]['estimated_diameter']['kilometers']['estimated_diameter_max'])/2,
+            'close_approach_date': data[neo]['close_approach_data'][neo]['close_approach_date'],
+            #'velocity': neo['close_approach_data'][0]['relative_velocity']['kilometers_per_hour'],
+            #'miss_distance': neo['close_approach_data'][0]['miss_distance']['kilometers'],
+            'hazardous': data[neo]['is_potentially_hazardous_asteroid']
         })
     return render_template('index.html', asteroids=asteroids)
 #if __name__ == '__main__':
