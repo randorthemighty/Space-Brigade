@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QTableWidgetItem,
     QCheckBox,
+    QComboBox,
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from deepimpack_UI import Ui_MainWindow
@@ -33,6 +34,11 @@ class MainWindow(QMainWindow):
             self.ui.checkbox3,
             self.ui.checkbox4,
         ]
+        # dropdown menu
+
+        asteroid_table = QComboBox()
+        asteroid_table.addItems(['Asteroid 1', 'Asteroid 2', 'Asteroid 3'])
+        self.ui.horizontalLayout_11.addWidget(asteroid_table)  # add to the horizontal layout
 
         # check table
 
