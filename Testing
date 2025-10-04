@@ -1,1 +1,4 @@
-# This is a little git
+import __editable___deepimpact_1_0_finder as di
+
+
+earth = di.planet()
