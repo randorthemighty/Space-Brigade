@@ -1,1 +1,9 @@
-sys.executable
+import deepimpact as di
+
+#### General idea: Will receive variables, needs to take them, 
+
+
+planet = di.Planet()
+entry_result = planet.solve_atmospheric_entry(0.5, 12000, 3000, 1e7, 45)
+energy_result = planet.calculate_energy(entry_result)
+print(energy_result.head())
