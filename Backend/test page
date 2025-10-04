@@ -20,13 +20,8 @@ def index():
 
 
     asteroids = []
-    for x in data:
-        for y in data['near_earth_objects']:
-            asteroids.append({
-                'name': y['name'],
-            })
-        return render_template('index.html', asteroids=asteroids)
-    print(asteroids)
+    for x in data['near_earth_objects'][x]:
+        pprint.pprint(x)
 #if __name__ == '__main__':
     #app.run(debug=True)
 
