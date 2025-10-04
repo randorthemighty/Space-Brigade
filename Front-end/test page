@@ -13,7 +13,8 @@ def index():
     url = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=WLnxw2BlieP9zAAfu9MHwN5NwZOhytUmRVjBzTcW"
     response = requests.get(url)
     data = response.json()
-    print(data['near_earth_objects'][0])
+    print(dir(data['near_earth_objects']))
+    print(data['near_earth_objects'][0]['close_data_approach'])
 
     asteroids = []
     for neo in data['near_earth_objects']:
@@ -21,9 +22,9 @@ def index():
             #'id': neo['íd'],
             'name': neo['name'],
             'magnitude': neo['absolute_magnitude_h'],
-            'radius_km': neo['estimated_radius']['kilometers']['estimated_diameter_max'/2],
+            'radius_km': neo['estimated_diameter']['kilometers']['estimated_diameter_max'],
             'close_approach_date': neo['close_approach_data'][0]['close_approach_date'],
-            'velocity': neo['close_approach_data'][0]['relative_velocity']['kilometers_per_hour'],
+            'velocity': neo['close_approach_data']['relative_velocity']['kilometers_per_hour'],
             'miss_distance': neo['close_approach_data'][0]['miss_distance']['kilometers'],
             'hazardous': neo['is_potentially_hazardous_asteroid']
         })
