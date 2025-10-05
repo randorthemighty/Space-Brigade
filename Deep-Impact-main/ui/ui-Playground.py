@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QTableWidgetItem,
     QCheckBox,
-    QComboBox
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from deepimpack_UI import Ui_MainWindow
@@ -77,45 +76,24 @@ class MainWindow(QMainWindow):
         self.ui.generate_buttom.clicked.connect(self.button_generation)
         self.ui.plot_button.clicked.connect(self.plot_html)
 
-    #def setup_dropdown(self, entries):
-     #   combo = QComboBox(self)
-      #  combo.setEditable(True)
-       # completer = QCompleter(entries)
-       # completer.setCaseSensitivity(False)
-       # combo.setCompleter(completer)
-       # combo.addItems(entries)
-       # self.ui.dropdown_search = combo
-       # self.ui.layout.addWidget(combo)
-       # combo.currentTextChanged.connect(self.on_dropdown_selection)
+    def setup_dropdown(self, entries):
+        combo = QComboBox(self)
+        combo.setEditable(True)
+        completer = QCompleter(entries)
+        completer.setCaseSensitivity(False)
+        combo.setCompleter(completer)
+        combo.addItems(entries)
+        self.ui.dropdown_search = combo
+        self.ui.layout.addWidget(combo)
+        combo.currentTextChanged.connect(self.on_dropdown_selection)
 
-   # def on_dropdown_selection(self, text):
+    def on_dropdown_selection(self, text):
         # Use the selected text as input
-    #    self.selected_dropdown_value = text
-
-     # dropdown menu
-
-        asteroid_table = QComboBox()
-        asteroid_table.addItems(['Asteroid 1', 'Asteroid 2', 'Asteroid 3'])
-        self.ui.horizontalLayout_11.addWidget(asteroid_table)  # add to the horizontal layout
-
-    def dropdown_generation(self):
-        self.input = []
-        # take drop down and/or typed input from user
-        self.input = [
-            str(self.ui.small_body_name.text()),  ## input[0]
-        ]
-        ## use input to get skuid
-
-
-        ## use skuid to get data from NeoWs api
-
-        ## run solvers we want to run
-
-        self.input = []
+        self.selected_dropdown_value = text
 
 ### this button generation code takes user input and compiles it in a list indexed as below. 
 ### later the list is used to call the deepimpact solver functions
-    def button_generation(self):
+    def button_generation(self: list) -> list:
         self.input = []
         # read data
         self.input = [
@@ -140,33 +118,33 @@ class MainWindow(QMainWindow):
 
         earth = deepimpact.Planet()
         result = earth.solve_atmospheric_entry(
-            radius=self.input[0],
-            angle=self.input[1],
-            strength=self.input[2],
-            density=self.input[3],
-            velocity=self.input[4],
+            radius: float=self.input[0],
+            angle: float=self.input[1],
+            strength: float=self.input[2],
+            density: float=self.input[3],
+            velocity: float=self.input[4],
         )
-        result = earth.calculate_energy(result)
-        outcome = earth.analyse_outcome(result)
+        result: DataFrame = earth.calculate_energy(result: DataFrame)
+        outcome: Dict = earth.analyse_outcome(result: DataFrame)
 
         # Calculate the blast location and damage radius for several pressure levels
 
 ### we will have to do some fancy work to get lat lon if its not provided in NEoWs api. might need
 ### to create a function to predict or calculate lat lon based on other data provided.
-        pressures = [1e3, 4e3, 30e3, 50e3]
+        pressures: List[float] = [1e3, 4e3, 30e3, 50e3]
         a = deepimpact.damage_zones(
-            outcome,
-            lat=self.input[5],
-            lon=self.input[6],
-            bearing=self.input[7],
-            pressures=pressures,
-        )
+            outcome: Dict,
+            lat: float=self.input[5],
+            lon: float=self.input[6],
+            bearing: float=self.input[7],
+            pressures: List[float]=pressures,
+        ) -> blat: float, blon: float, damrad: List[float]:
 ### i believe the "a" list is a populated by the above solvers
         self.blast_lat = a[0]
         self.blast_lon = a[1]
         self.damage_rad = a[2]
 
-        self.damage_rad_num = len(self.damage_rad)
+        self.damage_rad_num: int = len(self.damage_rad)
 
         # Display type + zero pint + radius
 
@@ -178,9 +156,13 @@ class MainWindow(QMainWindow):
         self.ui.type.append(outcome["outcome"])
         self.ui.zero_point1.append(str(self.blast_lat))
         self.ui.zero_point2.append(str(self.blast_lon))
+        
+        
         # radius
+        #This iterates through every integer of the damage radius and populates the table for widget item.
         for ii in range(self.damage_rad_num):
             self.ui.table.setItem(ii, 1, QTableWidgetItem(str(self.damage_rad[ii])))
+        
         # deal with checkbox with check or not
         for ii in range(4):
             if ii < self.damage_rad_num:
@@ -193,10 +175,11 @@ class MainWindow(QMainWindow):
     # Plots, based on the checkbox
 
     def plot_html(self):
-        map = folium.Map(
+        # map function takes parameters and moves map to that location.
+        map: Map = folium.Map(
             location=[self.blast_lat, self.blast_lon], control_scale=True, zoom_start=7
         )
-        # plot
+        # plots the damage circle on the maps
         for ii in range(self.damage_rad_num):
             if self.plot[ii]:
                 folium.Circle(
