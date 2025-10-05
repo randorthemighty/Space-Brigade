@@ -1,0 +1,38 @@
+import deepimpact
+import requests
+import numpy as np
+import pandas as pd
+import json
+import matplotlib.pyplot as plt
+import pprint
+from flask import Flask, render_template, jsonify 
+#######################
+
+SPKID = "3542519"  # example SPK-ID for an asteroid
+
+def get_earth_velocity(SPKID):
+    url = f"https://api.nasa.gov/neo/rest/v1/neo/{SPKID}?api_key=WLnxw2BlieP9zAAfu9MHwN5NwZOhytUmRVjBzTcW"
+    response = requests.get(url)
+    data = response.json()
+
+    #pprint.pprint(data['near_earth_objects'])
+    #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
+    close_approaches = data.get("close_approach_data", [])
+
+    earth_approaches = [
+        {
+            "orbiting_body": approach["orbiting_body"],
+            "relative_velocity_km_s": float(approach["relative_velocity"]["kilometers_per_second"])
+        }
+        for approach in close_approaches
+        if approach["orbiting_body"] == "Earth"
+    ]
+
+    df = pd.DataFrame(earth_approaches)
+
+    return df
+   
+df = get_earth_velocity(SPKID)
+print(df)
+
+## want this to return in a format where we can have the attributes indexable
