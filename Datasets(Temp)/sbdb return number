@@ -1,0 +1,12 @@
+import pandas as pd
+
+df = pd.read_csv('Datasets(Temp)/sbdb_query_results(2).csv')
+
+user_input = input("What is da input you want").strip()
+
+result = df[df['full_name'].str.strip() == user_input]['spkid']
+
+if not result.empty:
+    print(result.iloc[0])
+else:
+    print("Not found")
