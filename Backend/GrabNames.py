@@ -9,6 +9,6 @@ import pprint as pp
 fp = file_path = "Datasets(Temp)/sbdb_query_results.csv"
 df = pd.read_csv(fp, sep=';')
 # Showing the file columns
-print(df.head())
+print(df.head(9))
 NamesId = [(name,id) for name in df['full_name'] for id in df['spkid']]
 pp.pprint(NamesId[100])
