@@ -5,9 +5,10 @@ import pprint as pp
 
 # Reading in the CSV file
 
-fp = file_path = "/Users/randytauyan/Documents/GitHub/Space-Brigade/Datasets(Temp)/sbdb_query_results.csv"
-df = pd.read_csv(fp, sep=';')
+## What We Want to Do is use this file without having to use local files
+fp = file_path = "Datasets(Temp)/sbdb_query_results(2).csv"
+df = pd.read_csv(fp)
 # Showing the file columns
-print(df.head())
+print(df.head(9))
 NamesId = [(name,id) for name in df['full_name'] for id in df['spkid']]
 pp.pprint(NamesId[100])
