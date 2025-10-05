@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
         self.input = []
         # take drop down and/or typed input from user
         self.input = [
-            str(self.ui.dropdown_search.currentText()),  ## input[0]
+            str(self.ui.small_body_name.text()),  ## input[0]
         ]
         ## use input to get skuid
 
