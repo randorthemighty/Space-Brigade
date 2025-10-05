@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_db6237fd2b4eac38fbc44861b98b486d {
+                #map_bbb516650a8a4359b7d8a08649116f84 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,14 +54,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_db6237fd2b4eac38fbc44861b98b486d" ></div>
+            <div class="folium-map" id="map_bbb516650a8a4359b7d8a08649116f84" ></div>
         
 </body>
 <script>
     
     
-            var map_db6237fd2b4eac38fbc44861b98b486d = L.map(
-                "map_db6237fd2b4eac38fbc44861b98b486d",
+            var map_bbb516650a8a4359b7d8a08649116f84 = L.map(
+                "map_bbb516650a8a4359b7d8a08649116f84",
                 {
                     center: [54.52928118930537, -3.3669428007831215],
                     crs: L.CRS.EPSG3857,
@@ -73,13 +73,13 @@
 
                 }
             );
-            L.control.scale().addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            L.control.scale().addTo(map_bbb516650a8a4359b7d8a08649116f84);
 
             
 
         
     
-            var tile_layer_4e871a47018b75236e94ca2699c0ec55 = L.tileLayer(
+            var tile_layer_484ac1fe9bc76b981c5ec6f3d9fbdc2d = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -96,42 +96,42 @@
             );
         
     
-            tile_layer_4e871a47018b75236e94ca2699c0ec55.addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            tile_layer_484ac1fe9bc76b981c5ec6f3d9fbdc2d.addTo(map_bbb516650a8a4359b7d8a08649116f84);
         
     
-                var lat_lng_popup_2049ae6a889792c9effe6e0193f64612 = L.popup();
+                var lat_lng_popup_7be0cf195149482039c3b800c693b189 = L.popup();
                 function latLngPop(e) {
-                    lat_lng_popup_2049ae6a889792c9effe6e0193f64612
+                    lat_lng_popup_7be0cf195149482039c3b800c693b189
                         .setLatLng(e.latlng)
                         .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
                                     "<br>Longitude: " + e.latlng.lng.toFixed(4))
-                        .openOn(map_db6237fd2b4eac38fbc44861b98b486d);
+                        .openOn(map_bbb516650a8a4359b7d8a08649116f84);
                     }
-                map_db6237fd2b4eac38fbc44861b98b486d.on('click', latLngPop);
+                map_bbb516650a8a4359b7d8a08649116f84.on('click', latLngPop);
             
     
-            var circle_826516dcede0a824b646836f51377c21 = L.circle(
+            var circle_37fcf3f7a2e48074041fb995f494559b = L.circle(
                 [54.52928118930537, -3.3669428007831215],
                 {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 228232.70531293514, "stroke": true, "weight": 3}
-            ).addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            ).addTo(map_bbb516650a8a4359b7d8a08649116f84);
         
     
-            var circle_8a115ae0f620187d8720a941ae55c2c1 = L.circle(
+            var circle_393fdbbc848b58470b418807ff82e61d = L.circle(
                 [54.52928118930537, -3.3669428007831215],
                 {"bubblingMouseEvents": true, "color": "cornflowerblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "cornflowerblue", "fillOpacity": 0.1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 76915.89192093583, "stroke": true, "weight": 3}
-            ).addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            ).addTo(map_bbb516650a8a4359b7d8a08649116f84);
         
     
-            var circle_1eab345419759f83e1bd72e56015247f = L.circle(
+            var circle_e9a16598633222404acf83221555996f = L.circle(
                 [54.52928118930537, -3.3669428007831215],
                 {"bubblingMouseEvents": true, "color": "pink", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "pink", "fillOpacity": 0.1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 21612.05536490497, "stroke": true, "weight": 3}
-            ).addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            ).addTo(map_bbb516650a8a4359b7d8a08649116f84);
         
     
-            var circle_5d5b6a6f59df11a0c0f8005fe691fa69 = L.circle(
+            var circle_c683c065111056192d59835b4c6687a0 = L.circle(
                 [54.52928118930537, -3.3669428007831215],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16128.824107059074, "stroke": true, "weight": 3}
-            ).addTo(map_db6237fd2b4eac38fbc44861b98b486d);
+            ).addTo(map_bbb516650a8a4359b7d8a08649116f84);
         
 </script>
 </html>
