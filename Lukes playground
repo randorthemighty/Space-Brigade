@@ -18,6 +18,7 @@ strength = megatons*4.184e15*(1/volume)
 
 density = mass/volume
 
+print("hey yall")
 
 
 
