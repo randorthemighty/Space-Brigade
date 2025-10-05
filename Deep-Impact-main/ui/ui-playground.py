@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
             self.ui.checkbox3,
             self.ui.checkbox4,
         ]
-        # dropdown menu initialization
+        # dropdown menu
 
         asteroid_table = QComboBox()
         asteroid_table.addItems(['Asteroid 1', 'Asteroid 2', 'Asteroid 3'])
@@ -185,12 +185,7 @@ class MainWindow(QMainWindow):
     def checkbox4(self):
         self.plot[3] = not self.plot[3]
 
-# Checkbox query
 
-input = ""
-def InputToLower(input):
-    return input.lower()
-InputToLower(input)
 app = QApplication([])
 mainw = MainWindow()
 mainw.show()
