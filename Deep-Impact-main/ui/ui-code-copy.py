@@ -100,7 +100,17 @@ class MainWindow(QMainWindow):
     def dropdown_generation(self):
         self.input = []
         # take drop down and/or typed input from user
-        
+        self.input = [
+            str(self.ui.dropdown_search.currentText()),  ## input[0]
+        ]
+        ## use input to get skuid
+
+
+        ## use skuid to get data from NeoWs api
+
+        ## run solvers we want to run
+
+        self.input = []
 
 ### this button generation code takes user input and compiles it in a list indexed as below. 
 ### later the list is used to call the deepimpact solver functions
