@@ -5,7 +5,8 @@ import pprint as pp
 
 # Reading in the CSV file
 
-fp = file_path = "/Users/randytauyan/Documents/GitHub/Space-Brigade/Datasets(Temp)/sbdb_query_results.csv"
+## What We Want to Do is use this file without having to use local files
+fp = file_path = "Datasets(Temp)/Sentry Earth Impact Monitoring.xlsx"
 df = pd.read_csv(fp, sep=';')
 # Showing the file columns
 print(df.head())
