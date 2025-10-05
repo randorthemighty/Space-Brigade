@@ -93,7 +93,7 @@ class MainWindow(QMainWindow):
 
 ### this button generation code takes user input and compiles it in a list indexed as below. 
 ### later the list is used to call the deepimpact solver functions
-    def button_generation(self):
+    def button_generation(self: list) -> list:
         self.input = []
         # read data
         self.input = [
@@ -118,33 +118,33 @@ class MainWindow(QMainWindow):
 
         earth = deepimpact.Planet()
         result = earth.solve_atmospheric_entry(
-            radius=self.input[0],
-            angle=self.input[1],
-            strength=self.input[2],
-            density=self.input[3],
-            velocity=self.input[4],
+            radius: float=self.input[0],
+            angle: float=self.input[1],
+            strength: float=self.input[2],
+            density: float=self.input[3],
+            velocity: float=self.input[4],
         )
-        result = earth.calculate_energy(result)
-        outcome = earth.analyse_outcome(result)
+        result: DataFrame = earth.calculate_energy(result: DataFrame)
+        outcome: Dict = earth.analyse_outcome(result: DataFrame)
 
         # Calculate the blast location and damage radius for several pressure levels
 
 ### we will have to do some fancy work to get lat lon if its not provided in NEoWs api. might need
 ### to create a function to predict or calculate lat lon based on other data provided.
-        pressures = [1e3, 4e3, 30e3, 50e3]
+        pressures: List[float] = [1e3, 4e3, 30e3, 50e3]
         a = deepimpact.damage_zones(
-            outcome,
-            lat=self.input[5],
-            lon=self.input[6],
-            bearing=self.input[7],
-            pressures=pressures,
-        )
+            outcome: Dict,
+            lat: float=self.input[5],
+            lon: float=self.input[6],
+            bearing: float=self.input[7],
+            pressures: List[float]=pressures,
+        ) -> blat: float, blon: float, damrad: List[float]:
 ### i believe the "a" list is a populated by the above solvers
         self.blast_lat = a[0]
         self.blast_lon = a[1]
         self.damage_rad = a[2]
 
-        self.damage_rad_num = len(self.damage_rad)
+        self.damage_rad_num: int = len(self.damage_rad)
 
         # Display type + zero pint + radius
 
@@ -156,9 +156,13 @@ class MainWindow(QMainWindow):
         self.ui.type.append(outcome["outcome"])
         self.ui.zero_point1.append(str(self.blast_lat))
         self.ui.zero_point2.append(str(self.blast_lon))
+        
+        
         # radius
+        #This iterates through every integer of the damage radius and populates the table for widget item.
         for ii in range(self.damage_rad_num):
             self.ui.table.setItem(ii, 1, QTableWidgetItem(str(self.damage_rad[ii])))
+        
         # deal with checkbox with check or not
         for ii in range(4):
             if ii < self.damage_rad_num:
@@ -171,10 +175,11 @@ class MainWindow(QMainWindow):
     # Plots, based on the checkbox
 
     def plot_html(self):
-        map = folium.Map(
+        # map function takes parameters and moves map to that location.
+        map: Map = folium.Map(
             location=[self.blast_lat, self.blast_lon], control_scale=True, zoom_start=7
         )
-        # plot
+        # plots the damage circle on the maps
         for ii in range(self.damage_rad_num):
             if self.plot[ii]:
                 folium.Circle(
