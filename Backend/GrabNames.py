@@ -11,4 +11,4 @@ df = pd.read_csv(fp)
 # Showing the file columns
 print(df.head(9))
 NamesId = {name:id for name in df['full_name'] for id in df['spkid']}
-pp.pprint(NamesId)
+pp.pprint(len(NamesId.keys()))
