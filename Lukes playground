@@ -18,6 +18,9 @@ strength = megatons*4.184e15*(1/volume)
 
 density = mass/volume
 
-
-
-
+#### the UI first reads the numbers input
+#### into Radius, Angle, Strength, Density, Velocity.
+#### Then it saves a calculation from earth.solve_atmospheric entry.
+#### So basically, we have everything we can get. 
+#### We just need a thing that says "if user clicks on NEO from the dropdown,
+#### then populate the respective UI entries based on the formulas above."
