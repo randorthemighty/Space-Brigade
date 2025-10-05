@@ -8,6 +8,7 @@ import pprint
 from flask import Flask, render_template
 #######################
 
+SPKID = "3542519"  # example SPK-ID for an asteroid
 app = Flask(__name__)
 @app.route('/')
 def index():
@@ -16,6 +17,8 @@ def index():
     data = response.json()
     #pprint.pprint(data['near_earth_objects'])
     #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
+    return data
 
+index(SPKID)
 
 ## want this to return in a format where we can have the attributes indexable
