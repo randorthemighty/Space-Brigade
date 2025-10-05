@@ -10,6 +10,8 @@ import math
 ### Latitude, Longitude, and Bearing [the last three only affect meteor trajectory].
 
 # We start by taking API data and converting it into units fit for Deep-Impact
+print("hey yall")
+
 radius = diameter*500 #API measures Diameter in km
 
 volume = (4/3)*(math.pi)*radius^3
@@ -18,7 +20,6 @@ strength = megatons*4.184e15*(1/volume)
 
 density = mass/volume
 
-print("hey yall")
 
 
 
