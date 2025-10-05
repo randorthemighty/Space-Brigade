@@ -2,11 +2,14 @@ import pandas as pd
 
 df = pd.read_csv('Datasets(Temp)/sbdb_query_results(2).csv')
 
-user_input = input("Enter full name...").strip()
+def NameSearch(name: str) -> int:
+    user_input = name.strip()
 
-result = df[df['full_name'].str.strip() == user_input]['spkid']
+    result = df[df['full_name'].str.strip() == user_input]['spkid']
 
-if not result.empty:
-    print(result.iloc[0])
-else:
-    print("Not found")
+    if not result.empty:
+        print(result.iloc[0])
+    else:
+        print("Not found")
+
+NameSearch("433 Eros (A898 PA)")
