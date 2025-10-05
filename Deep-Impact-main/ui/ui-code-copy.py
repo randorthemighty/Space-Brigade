@@ -76,20 +76,31 @@ class MainWindow(QMainWindow):
         self.ui.generate_buttom.clicked.connect(self.button_generation)
         self.ui.plot_button.clicked.connect(self.plot_html)
 
-    def setup_dropdown(self, entries):
-        combo = QComboBox(self)
-        combo.setEditable(True)
-        completer = QCompleter(entries)
-        completer.setCaseSensitivity(False)
-        combo.setCompleter(completer)
-        combo.addItems(entries)
-        self.ui.dropdown_search = combo
-        self.ui.layout.addWidget(combo)
-        combo.currentTextChanged.connect(self.on_dropdown_selection)
+    #def setup_dropdown(self, entries):
+     #   combo = QComboBox(self)
+      #  combo.setEditable(True)
+       # completer = QCompleter(entries)
+       # completer.setCaseSensitivity(False)
+       # combo.setCompleter(completer)
+       # combo.addItems(entries)
+       # self.ui.dropdown_search = combo
+       # self.ui.layout.addWidget(combo)
+       # combo.currentTextChanged.connect(self.on_dropdown_selection)
 
-    def on_dropdown_selection(self, text):
+   # def on_dropdown_selection(self, text):
         # Use the selected text as input
-        self.selected_dropdown_value = text
+    #    self.selected_dropdown_value = text
+
+     # dropdown menu
+
+        asteroid_table = QComboBox()
+        asteroid_table.addItems(['Asteroid 1', 'Asteroid 2', 'Asteroid 3'])
+        self.ui.horizontalLayout_11.addWidget(asteroid_table)  # add to the horizontal layout
+
+    def dropdown_generation(self):
+        self.input = []
+        # take drop down and/or typed input from user
+        
 
 ### this button generation code takes user input and compiles it in a list indexed as below. 
 ### later the list is used to call the deepimpact solver functions
