@@ -10,7 +10,6 @@ import math
 ### Latitude, Longitude, and Bearing [the last three only affect meteor trajectory].
 
 # We start by taking API data and converting it into units fit for Deep-Impact
-
 radius = diameter*500 #API measures Diameter in km
 
 volume = (4/3)*(math.pi)*radius^3
@@ -18,12 +17,3 @@ volume = (4/3)*(math.pi)*radius^3
 strength = megatons*4.184e15*(1/volume)
 
 density = mass/volume
-
-angle = 90
-
-#### the UI first reads the numbers input
-#### into Radius, Angle, Strength, Density, Velocity.
-#### Then it saves a calculation from earth.solve_atmospheric entry.
-#### So basically, we have everything we can get. 
-#### We just need a thing that says "if user clicks on NEO from the dropdown,
-#### then populate the respective UI entries based on the formulas above."
