@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QTableWidgetItem,
     QCheckBox,
+    QComboBox
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from deepimpack_UI import Ui_MainWindow
