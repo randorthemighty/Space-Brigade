@@ -2,7 +2,7 @@ import pandas as pd
 
 df = pd.read_csv('Datasets(Temp)/sbdb_query_results(2).csv')
 
-user_input = input("What is da input you want").strip()
+user_input = input("Enter full name...").strip()
 
 result = df[df['full_name'].str.strip() == user_input]['spkid']
 
