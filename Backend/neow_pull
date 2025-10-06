@@ -4,21 +4,22 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
-import pprint
+import pprint as pp
 from flask import Flask, render_template, jsonify 
 #######################
 
 SPKID = "3542519"  # example SPK-ID for an asteroid
 
-def get_earth_velocity(SPKID):
+def get_earth_velocity(SPKID) -> pd.DataFrame:
     url = f"https://api.nasa.gov/neo/rest/v1/neo/{SPKID}?api_key=WLnxw2BlieP9zAAfu9MHwN5NwZOhytUmRVjBzTcW"
     response = requests.get(url)
     data = response.json()
 
-    #pprint.pprint(data['near_earth_objects'])
-    #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
-    close_approaches = data.get("close_approach_data", [])
+    
+    close_approaches: list= data.get("close_approach_data", [])
+    print(close_approaches[2])
 
+    # This is a list
     earth_approaches = [
         {
             "orbiting_body": approach["orbiting_body"],
@@ -31,19 +32,17 @@ def get_earth_velocity(SPKID):
     df = pd.DataFrame(earth_approaches)
 
     return df
-df = get_earth_velocity(SPKID)  
+print(get_earth_velocity("3542519"))
 
 def small_body(SPKID: int,df: pd.DataFrame):
     # request
     url = f"https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=diameter,GM,density&spk={SPKID}"
     response = requests.get(url)
     data = response.json()
-    print(data)
+    pp.pprint(data)
     #for body in bodies:
         #df.extend(body)
 
     #return df
-
-small_body(SPKID, df)
     
 ## want this to return in a format where we can have the attributes indexable
