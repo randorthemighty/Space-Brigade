@@ -47,7 +47,6 @@ def smallbody_pull(SPKID):
             SPKID: float(approach[1])
         }
         for approach in diameter_data
-        if approach[1] != None
     ])
     df = pd.DataFrame(diameters)
     return df
