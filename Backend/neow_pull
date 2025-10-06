@@ -32,17 +32,31 @@ def get_earth_velocity(SPKID) -> pd.DataFrame:
 
     return df.mean()
 print(get_earth_velocity("3542519"))
-def small_body(SPKID: int,df: pd.DataFrame):
-    # request
-    url = f"https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=diameter,GM,density&spk={SPKID}"
+
+
+def smallbody_pull(SPKID):
+    url = f"https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=spkid,diameter"
     response = requests.get(url)
     data = response.json()
-    print(data)
-    #for body in bodies:
-        #df.extend(body)
 
-    #return df
+    #pprint.pprint(data['near_earth_objects'])
+    #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
+    diameter_data = data.get(str(SPKID), [])
 
-small_body(SPKID, df)
+    diameters = [
+        {
+            str(SPKID): float(approach["diameter"]["km"])
+        }
+        for approach in diameter_data
+        if diameter_data[approach] == str(SPKID)
+    ]
+
+    df = pd.DataFrame(diameters)
+    
+
+    return df
+
+
+print(smallbody_pull(SPKID))
     
 ## want this to return in a format where we can have the attributes indexable
