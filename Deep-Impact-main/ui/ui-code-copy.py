@@ -97,7 +97,7 @@ class MainWindow(QMainWindow):
      # dropdown menuggggggggg
 
         asteroid_table = QComboBox()
-        object_name = pd.read_csv('../../Datasets(Temp)/sbdb_query_results(2).csv', delim_whitespace=True, header=None, usecols=[0,1], names=['Number', 'Name'])
+        object_name = pd.read_csv('https://github.com/randorthemighty/Space-Brigade/../../Datasets(Temp)/sbdb_query_results(2).csv', delim_whitespace=True, header=None, usecols=[0,1], names=['Number', 'Name'])
         entries = object_name['Name'].astype(str).tolist()
         asteroid_table.setEditable(True)
         asteroid_table.addItems(entries)
@@ -200,7 +200,8 @@ class MainWindow(QMainWindow):
     def plot_html(self):
         map = folium.Map(
             location=[self.blast_lat, self.blast_lon], control_scale=True, zoom_start=7
-        )
+        ).add_child(
+            folium.LatLngPopup())
         # plot
         for ii in range(self.damage_rad_num):
             if self.plot[ii]:
@@ -213,10 +214,10 @@ class MainWindow(QMainWindow):
                 ).add_to(map)
 
         # save
-        map.save("ui_map.html")
+        map.save("ui_map_lcopy.html")
         # read
 
-        with open("./ui_map.html", "r", encoding="utf-8") as file:
+        with open("./ui_map_lcopy.html", "r", encoding="utf-8") as file:
             html_content = file.read()
         self.ui.browser.setHtml(html_content)
 
@@ -238,3 +239,4 @@ app = QApplication([])
 mainw = MainWindow()
 mainw.show()
 app.exec_()
+
