@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
         # Use the selected text as input
     #    self.selected_dropdown_value = text
 
-     # dropdown menu
+     # dropdown menuggggggggg
 
         asteroid_table = QComboBox()
         object_name = pd.read_csv('https://github.com/randorthemighty/Space-Brigade/blob/main/Datasets(Temp)/sbdb_query_results(2).csv', delim_whitespace=True, header=None, usecols=[0,1], names=['Number', 'Name'])
