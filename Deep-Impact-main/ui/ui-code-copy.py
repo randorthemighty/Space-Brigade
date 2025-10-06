@@ -9,6 +9,8 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from deepimpack_UI import Ui_MainWindow
 import deepimpact
 import folium
+import pandas as pd
+from PyQt5.QtWidgets import QCompleter
 
 
 class MainWindow(QMainWindow):
@@ -92,10 +94,13 @@ class MainWindow(QMainWindow):
         # Use the selected text as input
     #    self.selected_dropdown_value = text
 
-     # dropdown menu
+     # dropdown menuggggggggg
 
         asteroid_table = QComboBox()
-        asteroid_table.addItems(['Asteroid 1', 'Asteroid 2', 'Asteroid 3'])
+        object_name = pd.read_csv('https://github.com/randorthemighty/Space-Brigade/blob/main/Datasets(Temp)/sbdb_query_results(2).csv', delim_whitespace=True, header=None, usecols=[0,1], names=['Number', 'Name'])
+        entries = object_name['Name'].tolist()
+        asteroid_table.setEditable(True)
+        asteroid_table.addItems(entries)
         self.ui.horizontalLayout_11.addWidget(asteroid_table)  # add to the horizontal layout
 
     def dropdown_generation(self):
