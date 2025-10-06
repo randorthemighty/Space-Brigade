@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
-import pprint
+import pprint as pp
 from flask import Flask, render_template, jsonify 
 #######################
 
@@ -38,23 +38,22 @@ def smallbody_pull(SPKID):
     url = f"https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=spkid,diameter"
     response = requests.get(url)
     data = response.json()
-
-    #pprint.pprint(data['near_earth_objects'])
-    #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
-    diameter_data = data.get(str(SPKID), [])
-
+    print(data['data'][0])
+    diameter_data = data.get('data', [])
+    #pp.pprint(diameter_data)
     diameters = [
         {
-            str(SPKID): float(approach["diameter"]["km"])
+            str(SPKID): float(approach[1])
         }
         for approach in diameter_data
-        if diameter_data[approach] == str(SPKID)
+        if approach[1] != None
     ]
 
     df = pd.DataFrame(diameters)
-    
-
+    pp.pprint(df)
     return df
+
+smallbody_pull(SPKID)
 
 
 print(smallbody_pull(SPKID))
