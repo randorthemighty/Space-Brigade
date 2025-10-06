@@ -98,7 +98,7 @@ class MainWindow(QMainWindow):
 
         asteroid_table = QComboBox()
         object_name = pd.read_csv('../../Datasets(Temp)/sbdb_query_results(2).csv', delim_whitespace=True, header=None, usecols=[0,1], names=['Number', 'Name'])
-        entries = object_name['Name'].tolist()
+        entries = object_name['Name'].astype(str).tolist()
         asteroid_table.setEditable(True)
         asteroid_table.addItems(entries)
         self.ui.horizontalLayout_11.addWidget(asteroid_table)  # add to the horizontal layout
