@@ -15,14 +15,13 @@ def get_earth_velocity(SPKID) -> pd.DataFrame:
     response = requests.get(url)
     data = response.json()
 
-    
+
     close_approaches: list= data.get("close_approach_data", [])
     print(close_approaches[2])
 
     # This is a list
     earth_approaches = [
         {
-            "orbiting_body": approach["orbiting_body"],
             "relative_velocity_km_s": float(approach["relative_velocity"]["kilometers_per_second"])
         }
         for approach in close_approaches
