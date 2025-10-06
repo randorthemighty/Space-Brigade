@@ -38,23 +38,18 @@ def smallbody_pull(SPKID):
     url = f"https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=spkid,diameter"
     response = requests.get(url)
     data = response.json()
-    print(data['data'][0])
     diameter_data = data.get('data', [])
+    print(len(diameter_data))
     #pp.pprint(diameter_data)
-    diameters = [
+    diameters = pd.DataFrame([
         {
-            str(SPKID): float(approach[1])
+            "ID": approach[0],
+            SPKID: float(approach[1])
         }
         for approach in diameter_data
-        if approach[1] != None
-    ]
-
+    ])
     df = pd.DataFrame(diameters)
-    pp.pprint(df)
     return df
-
-smallbody_pull(SPKID)
-
 
 print(smallbody_pull(SPKID))
     
