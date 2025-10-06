@@ -30,7 +30,7 @@ def get_earth_velocity(SPKID) -> pd.DataFrame:
 
     df = pd.DataFrame(earth_approaches)
 
-    return df
+    return df.mean()
 print(get_earth_velocity("3542519"))
 
 def small_body(SPKID: int,df: pd.DataFrame):
