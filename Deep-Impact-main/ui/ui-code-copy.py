@@ -195,13 +195,10 @@ class MainWindow(QMainWindow):
 
         self.input = []
 
-    # Plots, based on the checkbox
-
     def plot_html(self):
         map = folium.Map(
             location=[self.blast_lat, self.blast_lon], control_scale=True, zoom_start=7
-        ).add_child(
-            folium.LatLngPopup())
+        )
         # plot
         for ii in range(self.damage_rad_num):
             if self.plot[ii]:
@@ -214,10 +211,10 @@ class MainWindow(QMainWindow):
                 ).add_to(map)
 
         # save
-        map.save("ui_map_lcopy.html")
+        map.save("ui_map.html")
         # read
 
-        with open("./ui_map_lcopy.html", "r", encoding="utf-8") as file:
+        with open("./ui_map.html", "r", encoding="utf-8") as file:
             html_content = file.read()
         self.ui.browser.setHtml(html_content)
 
@@ -234,9 +231,15 @@ class MainWindow(QMainWindow):
     def checkbox4(self):
         self.plot[3] = not self.plot[3]
 
+# Checkbox query
 
+input = ""
+def InputToLower(input):
+    return input.lower()
+InputToLower(input)
 app = QApplication([])
 mainw = MainWindow()
 mainw.show()
 app.exec_()
+
 
