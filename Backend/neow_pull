@@ -43,6 +43,7 @@ def smallbody_pull(SPKID):
     #pp.pprint(diameter_data)
     diameters = pd.DataFrame([
         {
+            "ID": approach[0],
             SPKID: float(approach[1])
         }
         for approach in diameter_data
