@@ -1,0 +1,50 @@
+import deepimpact
+import requests
+import numpy as np
+import pandas as pd
+import json
+import matplotlib.pyplot as plt
+import pprint
+from flask import Flask, render_template
+#######################
+
+app = Flask(__name__)
+@app.route('/')
+def index():
+    url = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=WLnxw2BlieP9zAAfu9MHwN5NwZOhytUmRVjBzTcW"
+    response = requests.get(url)
+    data = response.json()
+    #pprint.pprint(data['near_earth_objects'])
+    #print(len(data['near_earth_objects'][0]['close_approach_data'][0]))
+    #print(data['near_earth_objects'])
+
+
+    asteroids = []
+    for x in data['near_earth_objects'][x]:
+        pprint.pprint(x)
+#if __name__ == '__main__':
+    #app.run(debug=True)
+
+#######################
+
+# Initialize the Planet class called Earth
+earth = deepimpact.Planet()
+index()
+# Calculate the energy
+
+earth.calculate_energy(
+    pd.DataFrame({
+        "altitude": [100000, 90000, 80000],
+        "velocity": [20000, 15000, 10000],
+        "mass": [1000, 800, 600]        
+    })
+)
+#Creating an acttack vector, need to pull in from the deep impact dataset
+class attackVector:
+    def __init__(self, radius, zipcodes):
+        self.radius = radius
+        self.zipcodes = zipcodes
+
+x = attackVector(20,[98823,92283,89100])
+print(x.zipcodes)
+deepimpact.impact_risk(x.radius, x.zipcodes)
